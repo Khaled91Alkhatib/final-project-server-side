@@ -68,3 +68,22 @@ INSERT INTO products
 
 
 
+INSERT INTO products
+  (sku, category_id, style_id, color_id,
+    name, description, image1, image2, image3, price, disp)
+   VALUES (1000, 1, 1, 2, 'test1',
+    'These men''s hikers were designed for comfort with a cushiony EVA-blend foam midsole and lightweight OrthoLite® footbed. Added features include a convenient speed-lacing system and eco-conscious materials',
+    '/Men_Shoes_FieldTrekker-Hiking-Boots_Grey_03.png',
+    '',
+    '',
+    14000, true );
+
+INSERT INTO products
+  (sku, category_id, style_id, color_id,
+    name, description, image1, image2, image3, price, disp)
+    VALUES (1001, 1, 3, 3, 'test2',
+    '',
+    '/Men_Shoes_FieldTrekker-Hiking-Boots_Brown_03.png',
+    '',
+    '',
+    14000, true );
