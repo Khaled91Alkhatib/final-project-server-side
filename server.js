@@ -41,12 +41,15 @@ app.use(express.static("public"));
 const usersRoutes = require("./routes/users");
 const productsRoutes = require("./routes/products");
 const specificationRoutes = require("./routes/specification");
+const checkoutRoute = require("./routes/checkout");
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 app.use("/api/users", usersRoutes(db));
 app.use("/api/products", productsRoutes(db));
 app.use("/api/specification", specificationRoutes(db));
+app.use("/checkout", checkoutRoute());
+
 // Note: mount other resources here, using the same pattern above
 
 // Home page
@@ -54,6 +57,7 @@ app.use("/api/specification", specificationRoutes(db));
 // Separate them into separate routes files (see above).
 
 app.get("/", (req, res) => {
+  console.log("app.get /");
   res.render("index");
 });
 
