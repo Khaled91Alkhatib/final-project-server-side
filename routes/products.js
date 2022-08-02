@@ -13,6 +13,7 @@ const {addNewProduct} = require('../db/queries/products/08-addNewProduct');
 const {addProductSize} = require('../db/queries/products/09-addProductSize');
 const {addBarcodeToInventory} = require('../db/queries/products/10-addBarcodeToInventory');
 const {findProductSizeByBarcode} = require('../db/queries/products/11-findProductSizeByBarcode');
+const {updateProductById} = require('../db/queries/products/12-updateProductById');
 
 module.exports = (db) => {
   router.get("/", (req, res) => {
@@ -49,7 +50,7 @@ module.exports = (db) => {
       res
       .status(500)
       .json({ error: err.message });
-    });;
+    });
   });
 
   router.post("/", (req, res) => {
@@ -66,7 +67,7 @@ module.exports = (db) => {
     .then(data => {
       const duplication = data.filter(row => row.rowCount > 0)
       if (duplication.length !== 0) {
-        res.json({ errCode: 1001, errMsg: `Error: There is duplication in barcodes! Product didn't add to database.`})
+        res.json({ errCode: 1001, errMsg: `Error: There is duplication in barcodes! Product is not added.`})
         return;
       } else {
         addNewProduct(db, newProduct)
@@ -91,8 +92,6 @@ module.exports = (db) => {
             Promise.all(addInventoryRowPromises)
             .then(() => {
               console.log('✅ All inventory lines added to DB');
-              // console.log('🚨🚨',data.rows)             // 🚨🚨🚨
-              // res.json({ data });
               return;
             })
           })
@@ -106,6 +105,62 @@ module.exports = (db) => {
       .json({ error: err.message });
     });
   });
+
+  router.put("/:id", (req, res) => {
+
+    const product = req.body.product;
+    const newSizeData = req.body.sizeData;
+    const id = req.params.id;
+
+    const barcodesArray = newSizeData.map(row => row.barcode);
+
+    const findDuplicationPromises = [];
+    for (const barcode of barcodesArray) {
+      findDuplicationPromises.push(findProductSizeByBarcode(db, barcode));
+    }
+    Promise.all(findDuplicationPromises)
+    .then(data => {
+      const duplication = data.filter(row => row.rowCount > 0)
+      if (duplication.length !== 0) {
+        res.json({ errCode: 1002, errMsg: `Error: There is duplication in barcodes! Product is not updated.`})
+        return;
+      } else {
+        updateProductById(db, id, product)
+        .then(data => {
+          console.log('✅','Edit done');
+          return getProductById(db, data.rows[0].id)
+        })
+        .then(item => {
+          res.json(item.rows[0]);
+          const productId = item.rows[0].id;
+          const addBarcodePromises = [];
+          for (const row of newSizeData) {
+            addBarcodePromises.push(addProductSize(db, row.barcode, productId, row.size_id));
+          }
+          Promise.all(addBarcodePromises)
+          .then ( data => {
+            console.log('✅ All barcodes added to DB');
+            const addInventoryRowPromises = [];
+            for (const row of newSizeData) {
+              addInventoryRowPromises.push(addBarcodeToInventory(db, row.barcode));
+            }
+            Promise.all(addInventoryRowPromises)
+            .then(() => {
+              console.log('✅ All inventory lines added to DB');
+              return;
+            })
+          })
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res
+      .status(500)
+      .json({ error: err.message });
+    });
+  })
+
 
   return router;
 };
