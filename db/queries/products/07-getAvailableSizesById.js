@@ -9,7 +9,7 @@ const getAvailableSizesById = (db, id) => {
     JOIN sizes ON product_sizes.size_id = sizes.id
     JOIN inventory ON inventory.barcode = product_sizes.id
     WHERE products.id = $1
-    ;`, [id])
+    ORDER BY product_sizes.size_id;`, [id])
 }
 
 module.exports = { getAvailableSizesById };
