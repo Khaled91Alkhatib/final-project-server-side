@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 const { addToOrderLines } = require("../db/queries/orders/01-addToOrderLines");
 const { addToOrders } = require("../db/queries/orders/02-addToOrders");
 const { getCartUpdated } = require("../db/queries/orders/03-getCartUpdated");
-const {updateInventory} = require("../db/queries/inventory/02-updateInventory");
+const {reduceInventory} = require("../db/queries/orders/04-reduceInventory");
 
 
 module.exports = (db) => {
@@ -71,7 +71,7 @@ module.exports = (db) => {
       const orderLinesPromiseArray = [];
       for (const orderLine of cart) {
         orderLinesPromiseArray.push(addToOrderLines(db, orderLine, newOrder.rows[0].id))
-        orderLinesPromiseArray.push(updateInventory(db, orderLine.barcode, -(orderLine.quantity)))
+        orderLinesPromiseArray.push(reduceInventory(db, orderLine.barcode, orderLine.quantity))
       }
       const results = await Promise.all(orderLinesPromiseArray);
     } catch (error) {
