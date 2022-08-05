@@ -51,7 +51,7 @@ app.use("/api/users", usersRoutes(db));
 app.use("/api/products", productsRoutes(db));
 app.use("/api/specification", specificationRoutes(db));
 app.use("/api/inventory", inventoryRoutes(db));
-app.use("/checkout", checkoutRoute());
+app.use("/checkout", checkoutRoute(db));
 
 // Note: mount other resources here, using the same pattern above
 

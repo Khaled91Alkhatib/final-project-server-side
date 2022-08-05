@@ -67,10 +67,15 @@ module.exports = (db) => {
       status = "success";
 
       const newOrder = await addToOrders(db, charge.amount, req.body.token)
-      // console.log("newLog", newOrder)
+      console.log("newLog", newOrder)
 
-      const orderLine = await addToOrderLines(db, req.body.cart[0], newOrder.rows[0].id)
-      console.log("orderLine", orderLine)
+      const promiseArray = []
+      for (const orderLine of cart) {
+        promiseArray.push(addToOrderLines(db, orderLine, newOrder.rows[0].id))
+      }
+      // const orderLine = await addToOrderLines(db, req.body.cart[0], newOrder.rows[0].id)
+      // console.log("orderLine", orderLine)
+      const results = await Promise.all(promiseArray);
 
     } catch (error) {
       console.log("error", error);
