@@ -8,14 +8,16 @@ const uuid = require('uuid').v4;
 router.use(express.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-const { addToOrderLines } = require("../db/queries/orders/01-addToOrderLines")
-const { addToOrders } = require("../db/queries/orders/02-addToOrders")
+const { addToOrderLines } = require("../db/queries/orders/01-addToOrderLines");
+const { addToOrders } = require("../db/queries/orders/02-addToOrders");
+const { getCartUpdated } = require("../db/queries/orders/03-getCartUpdated");
+const {updateInventory} = require("../db/queries/inventory/02-updateInventory");
 
 
 module.exports = (db) => {
 
   router.post("/", async (req, res) => {
-    console.log("body", req.body);
+    // console.log("body", req.body);
     let error, status;
 
     try {
@@ -38,9 +40,6 @@ module.exports = (db) => {
       });
       // console.log("customer", customer)
       const key = uuid();
-      // console.log('token', token);
-      // console.log('key', key);
-      // console.log('cart', cart);
       const charge = await stripe.charges.create(
         {
           amount: Math.floor((totalAfterTaxes * 100).toFixed(2)),
@@ -69,24 +68,35 @@ module.exports = (db) => {
       const newOrder = await addToOrders(db, charge.amount, req.body.token)
       console.log("newLog", newOrder)
 
-      const promiseArray = []
+      const orderLinesPromiseArray = [];
       for (const orderLine of cart) {
-        promiseArray.push(addToOrderLines(db, orderLine, newOrder.rows[0].id))
+        orderLinesPromiseArray.push(addToOrderLines(db, orderLine, newOrder.rows[0].id))
+        orderLinesPromiseArray.push(updateInventory(db, orderLine.barcode, -(orderLine.quantity)))
       }
-      // const orderLine = await addToOrderLines(db, req.body.cart[0], newOrder.rows[0].id)
-      // console.log("orderLine", orderLine)
-      const results = await Promise.all(promiseArray);
-
+      const results = await Promise.all(orderLinesPromiseArray);
     } catch (error) {
       console.log("error", error);
       status = "failure";
     }
     res.json({ error, status });
-
-    // router.post("/api/orders", (req, res) => {
-    //   console.log("orders", req)
-    // })
   });
+
+  router.get("/validation", (req, res) => {
+
+    getCartUpdated(db)
+    .then(data => {
+      const updatedInfo = data.rows;
+      res.json({ updatedInfo });
+      return;
+    })
+    .catch(err => {
+      res
+      .status(500)
+      .json({ error: err.message });
+    });
+  });
+
+
   return router;
 };
 

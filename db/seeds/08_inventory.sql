@@ -9,7 +9,7 @@ INSERT INTO inventory (barcode, quantity)
 INSERT INTO inventory (barcode, quantity)
   VALUES (100004, 10);
 INSERT INTO inventory (barcode, quantity)
-  VALUES (100005, 10);
+  VALUES (100005, 0);
 INSERT INTO inventory (barcode, quantity)
   VALUES (100006, 10);
 INSERT INTO inventory (barcode, quantity)

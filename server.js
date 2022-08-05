@@ -42,7 +42,7 @@ app.use(express.static("public"));
 const usersRoutes = require("./routes/users");
 const productsRoutes = require("./routes/products");
 const specificationRoutes = require("./routes/specification");
-const checkoutRoute = require("./routes/checkout");
+const ordersRoute = require("./routes/orders");
 const inventoryRoutes = require("./routes/inventory");
 
 // Mount all resource routes
@@ -51,7 +51,7 @@ app.use("/api/users", usersRoutes(db));
 app.use("/api/products", productsRoutes(db));
 app.use("/api/specification", specificationRoutes(db));
 app.use("/api/inventory", inventoryRoutes(db));
-app.use("/checkout", checkoutRoute(db));
+app.use("/orders", ordersRoute(db));
 
 // Note: mount other resources here, using the same pattern above
 
