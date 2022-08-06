@@ -12,6 +12,8 @@ const { addToOrderLines } = require("../db/queries/orders/01-addToOrderLines");
 const { addToOrders } = require("../db/queries/orders/02-addToOrders");
 const { getCartUpdated } = require("../db/queries/orders/03-getCartUpdated");
 const {reduceInventory} = require("../db/queries/orders/04-reduceInventory");
+const {getOrdersInfoByDateRange} = require("../db/queries/orders/05-getOrdersInfoByDateRange");
+const {getOrderDetailsByDateRange} = require("../db/queries/orders/06-getOrderDetailsByDateRange");
 
 
 module.exports = (db) => {
@@ -82,7 +84,6 @@ module.exports = (db) => {
   });
 
   router.get("/validation", (req, res) => {
-
     getCartUpdated(db)
     .then(data => {
       const updatedInfo = data.rows;
@@ -94,6 +95,29 @@ module.exports = (db) => {
       .status(500)
       .json({ error: err.message });
     });
+  });
+
+  router.get("/", (req, res) => {
+
+    console.log("🟣",req.query)
+
+    const start = req.query.fromDate;
+    const end = req.query.toDate;
+
+    const f1 = getOrdersInfoByDateRange(db, start, end);
+    const f2 = getOrderDetailsByDateRange(db, start, end);
+    Promise.all([f1, f2])
+    .then(([r1, r2]) => {
+      const ordersInfo = r1.rows;
+      const orderDetails = r2.rows;
+      res.json({ ordersInfo, orderDetails });
+      return;
+    })
+    .catch(err => {
+      res
+      .status(500)
+      .json({ error: err.message });
+    });;
   });
 
 
