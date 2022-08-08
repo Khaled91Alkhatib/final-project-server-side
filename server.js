@@ -45,6 +45,7 @@ const specificationRoutes = require("./routes/specification");
 const ordersRoutes = require("./routes/orders");
 const inventoryRoutes = require("./routes/inventory");
 const dashboardRoutes = require("./routes/dashboard");
+const reviewsRoutes = require("./routes/reviews");
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
@@ -54,6 +55,7 @@ app.use("/api/specification", specificationRoutes(db));
 app.use("/api/inventory", inventoryRoutes(db));
 app.use("/orders", ordersRoutes(db));
 app.use("/dashboard", dashboardRoutes(db));
+app.use("/reviews", reviewsRoutes(db));
 
 // Note: mount other resources here, using the same pattern above
 

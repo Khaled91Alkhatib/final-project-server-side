@@ -14,6 +14,8 @@ const {addProductSize} = require('../db/queries/products/09-addProductSize');
 const {addBarcodeToInventory} = require('../db/queries/products/10-addBarcodeToInventory');
 const {findProductSizeByBarcode} = require('../db/queries/products/11-findProductSizeByBarcode');
 const {updateProductById} = require('../db/queries/products/12-updateProductById');
+const {getReviewsById} = require('../db/queries/reviews/01-getReviewsById');
+const {getAvgRating} = require('../db/queries/reviews/02-getAvgRating');
 
 module.exports = (db) => {
   router.get("/", (req, res) => {
@@ -33,16 +35,26 @@ module.exports = (db) => {
   });
 
   router.get("/:id", (req, res) => {
-
     const curId = req.params.id;
+
+    let product, availableSizes
     const f1 = getProductById(db, curId);
     const f2 = getAvailableSizesById(db, curId);
 
     Promise.all([f1, f2])
     .then(([r1, r2]) => {
-      const product = r1.rows[0];
-      const availableSizes = r2.rows;
-      res.json({ product, availableSizes });
+      product = r1.rows[0];
+      availableSizes = r2.rows;
+
+      const code = product.sku.slice(0, 4);
+      const f3 = getReviewsById(db, code);
+      const f4 = getAvgRating(db, code);
+      return Promise.all([f3, f4])
+    })
+    .then(([r3, r4])=> {
+      const reviews = r3.rows;
+      const averageRating = r4.rows[0];
+      res.json({ product, availableSizes, reviews, averageRating });
       return;
     })
     .catch(err => {
