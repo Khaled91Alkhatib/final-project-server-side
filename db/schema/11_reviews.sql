@@ -12,7 +12,8 @@ CREATE TABLE reviews (
   headline TEXT NOT NULL,
   comments TEXT NOT NULL,
   rating NUMERIC NOT NULL,
-  display BOOLEAN  NOT NULL DEFAULT true,
-  create_time DATE NOT NULL DEFAULT NOW()
+  display BOOLEAN  NOT NULL DEFAULT false,
+  create_time DATE NOT NULL DEFAULT NOW(),
+  inactive BOOLEAN  NOT NULL DEFAULT false
 );
 
