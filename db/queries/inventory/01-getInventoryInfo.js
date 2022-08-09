@@ -1,7 +1,7 @@
 const getInventoryInfo = (db) => {
   return db.query(`
   SELECT
-    products.id as id, products.sku as sku, products.name as name,
+    products.id as id, products.sku as sku, products.name as name, image1,
     product_sizes.id as barcode,
     sizes.size as size,
     inventory.quantity as qty
