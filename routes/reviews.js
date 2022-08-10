@@ -18,7 +18,7 @@ module.exports = (db) => {
 
     addNewReview(db, review)
     .then(data => {
-      console.log('✅','review added');
+      // console.log('✅','review added');
       res.json(data.rows[0]);
     })
     .catch(err => {
@@ -56,7 +56,7 @@ module.exports = (db) => {
 
     Promise.all(updatePromises)
     .then(data => {
-      console.log('✅','reviews updated');
+      // console.log('✅','reviews updated');
       res.json(data.rows);
     })
     .catch(err => {

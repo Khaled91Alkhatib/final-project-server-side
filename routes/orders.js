@@ -32,7 +32,7 @@ module.exports = (db) => {
 
       const taxes = totalEndPriceBeforeTaxes * 0.13;
       const totalAfterTaxes = (totalEndPriceBeforeTaxes + taxes);
-      console.log("with taxes", totalAfterTaxes.toFixed(2));
+      // console.log("with taxes", totalAfterTaxes.toFixed(2));
       // console.log('total', totalEndPrice);
       // console.log('stripe', stripe)
 
@@ -68,7 +68,7 @@ module.exports = (db) => {
       status = "success";
 
       const newOrder = await addToOrders(db, charge.amount, req.body.token)
-      console.log("newLog", newOrder)
+      // console.log("newLog", newOrder)
 
       const orderLinesPromiseArray = [];
       for (const orderLine of cart) {
@@ -99,7 +99,7 @@ module.exports = (db) => {
 
   router.get("/", (req, res) => {
 
-    console.log("🟣",req.query)
+    // console.log("🟣",req.query)
 
     const start = req.query.fromDate;
     const end = req.query.toDate;

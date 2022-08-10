@@ -31,7 +31,7 @@ module.exports = (db) => {
     const newQty = req.body.newQty;
     updateInventory(db, barcode, newQty)
     .then(data => {
-      console.log('✅','update inventory done');
+      // console.log('✅','update inventory done');
       res.json(data.rows[0]);
     })
     .catch(err => {

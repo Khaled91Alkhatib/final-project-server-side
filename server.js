@@ -64,7 +64,7 @@ app.use("/reviews", reviewsRoutes(db));
 // Separate them into separate routes files (see above).
 
 app.get("/", (req, res) => {
-  console.log("app.get /");
+  // console.log("app.get /");
   res.render("index");
 });
 

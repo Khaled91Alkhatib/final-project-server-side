@@ -84,7 +84,7 @@ module.exports = (db) => {
       } else {
         addNewProduct(db, newProduct)
         .then(data => {
-          console.log('✅','add done');
+          // console.log('✅','add done');
           return getProductById(db, data.rows[0].id)
         })
         .then(item => {
@@ -96,14 +96,14 @@ module.exports = (db) => {
           }
           Promise.all(addBarcodePromises)
           .then ( data => {
-            console.log('✅ All barcodes added to DB');
+            // console.log('✅ All barcodes added to DB');
             const addInventoryRowPromises = [];
             for (const row of newSizeData) {
               addInventoryRowPromises.push(addBarcodeToInventory(db, row.barcode));
             }
             Promise.all(addInventoryRowPromises)
             .then(() => {
-              console.log('✅ All inventory lines added to DB');
+              // console.log('✅ All inventory lines added to DB');
               return;
             })
           })
@@ -139,7 +139,7 @@ module.exports = (db) => {
       } else {
         updateProductById(db, id, product)
         .then(data => {
-          console.log('✅','Edit done');
+          // console.log('✅','Edit done');
           return getProductById(db, data.rows[0].id)
         })
         .then(item => {
@@ -151,14 +151,14 @@ module.exports = (db) => {
           }
           Promise.all(addBarcodePromises)
           .then ( data => {
-            console.log('✅ All barcodes added to DB');
+            // console.log('✅ All barcodes added to DB');
             const addInventoryRowPromises = [];
             for (const row of newSizeData) {
               addInventoryRowPromises.push(addBarcodeToInventory(db, row.barcode));
             }
             Promise.all(addInventoryRowPromises)
             .then(() => {
-              console.log('✅ All inventory lines added to DB');
+              // console.log('✅ All inventory lines added to DB');
               return;
             })
           })
