@@ -12,3 +12,4 @@ INSERT INTO colors (color) VALUES ( 'Purple' );   --c09
 INSERT INTO colors (color) VALUES ( 'Green' );    --c10
 INSERT INTO colors (color) VALUES ( 'Yellow' );   --c11
 INSERT INTO colors (color) VALUES ( 'Pink' );     --c12
+INSERT INTO colors (color) VALUES ( 'Orange' );   --c13
