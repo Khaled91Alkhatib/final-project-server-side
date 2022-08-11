@@ -45,17 +45,23 @@ module.exports = (db) => {
     .then(([r1, r2]) => {
       product = r1.rows[0];
       availableSizes = r2.rows;
+      if (product) {
+        const code = product.sku.slice(0, 4);
 
-      const code = product.sku.slice(0, 4);
-      const f3 = getReviewsById(db, code);
-      const f4 = getAvgRating(db, code);
-      return Promise.all([f3, f4])
-    })
-    .then(([r3, r4])=> {
-      const reviews = r3.rows;
-      const averageRating = r4.rows[0];
-      res.json({ product, availableSizes, reviews, averageRating });
-      return;
+        const f3 = getReviewsById(db, code);
+        const f4 = getAvgRating(db, code);
+        Promise.all([f3, f4])
+        .then(([r3, r4])=> {
+          const reviews = r3.rows;
+          const averageRating = r4.rows[0];
+          res.json({ product, availableSizes, reviews, averageRating });
+          return;
+        })
+      }
+      else {
+        res.json({ errCode: 1005, errMsg:'product not found' });
+        return
+      }
     })
     .catch(err => {
       // console.log(err.message);
